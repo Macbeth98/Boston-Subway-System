@@ -142,19 +142,39 @@ CREATE TABLE cargo_unit
     on delete cascade
 );
 
+CREATE TABLE `route_station`
+(
+    `route_id` INT NOT NULL,
+    `station_id` INT NOT NULL,
+    stop_no		INT NOT NULL,
+    CONSTRAINT `PK_rs` PRIMARY KEY  (`route_id`, `station_id`),
+    CONSTRAINT rs_fk_route
+    FOREIGN KEY (route_id)
+    REFERENCES route (route_id)
+    on update cascade
+    on delete cascade,
+    
+    CONSTRAINT rs_fk_station
+    FOREIGN KEY (station_id)
+    REFERENCES station (station_id)
+    on update cascade
+    on delete cascade
+);
+
 CREATE TABLE ticket
 (
 	ticket_id 		INT PRIMARY KEY auto_increment,
     date_time       datetime,
+    station_id		INT,
     route_id        INT,
     passenger_id	INT,
     employee_id		INT,
     tram_id			INT,
-    CONSTRAINT route_fk_ticket
-    FOREIGN KEY (route_id)
-    REFERENCES route(route_id)
-    on update No Action
-    on delete No action,
+    CONSTRAINT rs_fk_route_station
+    FOREIGN KEY (route_id, station_id)
+    references route_station(route_id, station_id)
+    On update No Action
+    on delete No Action,
     
     CONSTRAINT passenger_fk_ticket
     FOREIGN KEY (passenger_id)
@@ -194,25 +214,6 @@ CREATE TABLE luggage
     on delete cascade
 );
 
-CREATE TABLE `route_station`
-(
-    `route_id` INT NOT NULL,
-    `station_id` INT NOT NULL,
-    stop_no		INT NOT NULL,
-    CONSTRAINT `PK_rs` PRIMARY KEY  (`route_id`, `station_id`),
-    CONSTRAINT rs_fk_route
-    FOREIGN KEY (route_id)
-    REFERENCES route (route_id)
-    on update cascade
-    on delete cascade,
-    
-    CONSTRAINT rs_fk_station
-    FOREIGN KEY (station_id)
-    REFERENCES station (station_id)
-    on update cascade
-    on delete cascade
-);
-
 create table motorman_tram
 (
 	employee_id		INT NOT NULL,
@@ -230,3 +231,6 @@ create table motorman_tram
     on update cascade
     on delete cascade
 );
+
+-- ALTER the passenger table to have cashback.
+-- Create a Trigger to update the cashback value by 5 everytime the passenger buys a ticket.
