@@ -1,193 +1,4 @@
-use r97dF5IqLS;
-
-SELECT * from city;
-insert into city set `city_code` = null, `city_name` = 'Cambridge11', `state_name` = 'MA';
-
-select p.name, p.passenger_id, count(t.ticket_id) from passenger as p inner join tickets as t on t.passenger_id = p.passenger_id inner join route as r group by p.passenger_id;
-
--- How many times a passenger has travelled in a route.
-select p.name, r.line_name, count(*) from tickets as t inner join passenger as p on p.passenger_id = t.passenger_id 
-inner join route as r on r.route_id = t.route_id group by p.passenger_id, p.route_id;
-
--- Error Handling Required for Procedures and Functions.
-
-/*
-	The cargo weight of a tram through the given time range. (Sum of the Weights).
-*/
-
-/*
-	Busy days of the week.
-*/
-
-/*
-	get the routes available for a given source and destination. In review
-*/
-
--- Get the trams available for a route on a day. Like operator to match the days.
-
-/*
-	INSERT into ticket. 
-*/
-delimiter $$
-create procedure createTicket(
-	IN station_id int, IN route_id int, IN passenger_id int, 
-    IN employee_id int, IN tram_id int, IN luggage Boolean
-)
-begin
-    
-    IF station_id IS NULL THEN
-		SIGNAL SQLSTATE '23000'
-			SET MESSAGE_TEXT = 'Fatal cannot be null', MYSQL_ERRNO = 1048 ;
-    END IF;
-    
-    IF route_id IS NULL THEN
-		SIGNAL SQLSTATE '23000'
-			SET MESSAGE_TEXT = 'Attack date cannot be null', MYSQL_ERRNO = 1048 ;
-    END IF;
-    
-    IF passenger_id IS NULL THEN
-		SIGNAL SQLSTATE '23000'
-			SET MESSAGE_TEXT = 'Town cannot be null', MYSQL_ERRNO = 1048 ;
-    END IF;
-    
-    IF employee_id IS NULL THEN
-		SIGNAL SQLSTATE '23000'
-			SET MESSAGE_TEXT = 'State cannot be null', MYSQL_ERRNO = 1048 ;
-    END IF;
-    
-    IF tram_id IS NULL THEN
-		SIGNAL SQLSTATE '23000'
-			SET MESSAGE_TEXT = 'State cannot be null', MYSQL_ERRNO = 1048 ;
-    END IF;
-    
-    IF luggage IS NULL THEN
-		SIGNAL SQLSTATE '23000'
-			SET MESSAGE_TEXT = 'State cannot be null', MYSQL_ERRNO = 1048 ;
-    END IF;
-    
-    insert into ticket values (null, null, station_id, route_id, passenger_id, employee_id, tram_id, luggage);
-end $$
-delimiter ;
-
-
-delimiter $$
-create trigger ticket_after_insert
-	after insert on ticket
-    for each row
-begin
-	update township
-    SET numAttacks = numAttacks + 1
-    WHERE tid = new.location;
-end $$
-delimiter ;
-
-
-INSERT INTO `station` VALUES (1,"Downtown Crossing","1 Down Street","Parking",1);
-INSERT INTO `station` VALUES (2,"Park St","2 Park Street","ATM",1);
-INSERT INTO `station` VALUES (3,"State","4 Down State","Lounge",1);
-INSERT INTO `station` VALUES (4,"Govt Center","3 Center street","Parking",1);
-INSERT INTO `station` VALUES (5,"Ruggles","1 Rugg Street","ATM",1);
-INSERT INTO `station` VALUES (6,"Stony Brook","4 Brook Ave","Lounge",1);
-INSERT INTO `station` VALUES (7,"JFK","2 Umass Ave","Parking",1);
-INSERT INTO `station` VALUES (8,"Shawmut","3 Pond Ave","Parking",1);
-INSERT INTO `station` VALUES (9,"Wollaston","3 Wood Street","Lounge",1);
-INSERT INTO `station` VALUES (10,"South St","4 South street","Lounge",1);
-INSERT INTO `station` VALUES (11,"Kent St","2 king street","Parking",1);
-INSERT INTO `station` VALUES (12,"Newton Centre","22 center street","Parking",1);
-INSERT INTO `station` VALUES (13,"Symphony","2 huntington ave","Parking",1);
-INSERT INTO `station` VALUES (14,"Harvard","3 harvard sq","Parking",1);
-INSERT INTO `station` VALUES (15,"Wood Island","34 wood ave","Lounge",1);
-INSERT INTO `station` VALUES (16,"Assembly","21 assembly ave","ATM",1);
-INSERT INTO `station` VALUES (17,"Copley","27 Copley St","ATM, Lounge",1);
-INSERT INTO `station` VALUES (18,"BU Central","7 Central St","ATM, Lounge",1);
-INSERT INTO `station` VALUES (19,"Longwood","2 Long St","ATM",1);
-INSERT INTO `station` VALUES (20,"Union Square","28 Union St","ATM",1);
-INSERT INTO `station` VALUES (21,"Alewife","30 Alewife Ave","ATM",1);
-
-
-INSERT INTO `line` VALUES ("Green Line B");
-INSERT INTO `line` VALUES ("Green Line C");
-INSERT INTO `line` VALUES ("Green Line D");
-INSERT INTO `line` VALUES ("Green Line E");
-INSERT INTO `line` VALUES ("Orange Line");
-INSERT INTO `line` VALUES ("Red Line");
-INSERT INTO `line` VALUES ("Red Line M");
-INSERT INTO `line` VALUES ("Blue Line");
-
-delete from line;
-
-
-
-INSERT INTO `route` VALUES (1,100,"Green Line B");
-INSERT INTO `route` VALUES (2,200,"Green Line C");
-INSERT INTO `route` VALUES (3,100,"Green Line D");
-INSERT INTO `route` VALUES (4,400,"Green Line E");
-INSERT INTO `route` VALUES (5,200,"Red Line");
-INSERT INTO `route` VALUES (6,100,"Red Line M");
-INSERT INTO `route` VALUES (7,100,"Blue Line");
-INSERT INTO `route` VALUES (8,100,"Orange Line");
-
-select * from route;
-
-select * from station;
-
-INSERT INTO `route_station` VALUES(1,10,1);
-INSERT INTO `route_station` VALUES(1,18,2);
-INSERT INTO `route_station` VALUES(1,17,3);
-INSERT INTO `route_station` VALUES(1,2,4);
-INSERT INTO `route_station` VALUES(1,4,5);
-INSERT INTO `route_station` VALUES(1,20,6);
-
-
-INSERT INTO `route_station` VALUES(3,12,1);
-INSERT INTO `route_station` VALUES(3,19,2);
-INSERT INTO `route_station` VALUES(3,17,3);
-INSERT INTO `route_station` VALUES(3,2,4);
-INSERT INTO `route_station` VALUES(3,4,5);
-INSERT INTO `route_station` VALUES(3,20,6);
-
--- Red line
-INSERT INTO `route_station` VALUES(5,9,1);
-INSERT INTO `route_station` VALUES(5,7,2);
-INSERT INTO `route_station` VALUES(5,1,3);
-INSERT INTO `route_station` VALUES(5,2,4);
-INSERT INTO `route_station` VALUES(5,14,5);
-INSERT INTO `route_station` VALUES(5,21,6);
-
--- Orange Line
-INSERT INTO `route_station` VALUES(8,6,1);
-INSERT INTO `route_station` VALUES(8,5,2);
-INSERT INTO `route_station` VALUES(8,1,3);
-INSERT INTO `route_station` VALUES(8,3,4);
-INSERT INTO `route_station` VALUES(8,16,5);
-
-
-INSERT INTO `tram` VALUES (1,"South St","M/T/W","9am-1am",1, true);
-INSERT INTO `tram` VALUES (2,"Newton Centre","M/T/W","9am-1am",3, true);
-
-INSERT INTO `tram` VALUES (3,"Union Square","Th/Fri/Sat","9am-10pm",1, false);
-INSERT INTO `tram` VALUES (4,"Union Square","Th/Fri/Sat","9am-10pm",3, false);
-
-
-INSERT INTO `tram` VALUES (5,"Wollaston","M/T/W","9am-1am",5, true);
-INSERT INTO `tram` VALUES (6,"Alewife","M/T/W","9am-1am",5, false);
-
-INSERT INTO `tram` VALUES (7,"Stony Brook","M/T/W","9am-6pm",8, true);
-INSERT INTO `tram` VALUES (8,"Assembly","M/T/W","9am-6pm",8, false);
-
-INSERT INTO `cargo_unit` VALUES(1,200,4);
-INSERT INTO `cargo_unit` VALUES(2,300,5);
-INSERT INTO `cargo_unit` VALUES(3,100,3);
-INSERT INTO `cargo_unit` VALUES(4,300,2);
-INSERT INTO `cargo_unit` VALUES(5,200,5);
-INSERT INTO `cargo_unit` VALUES(6,100,3);
-INSERT INTO `cargo_unit` VALUES(7,100,3);
-INSERT INTO `cargo_unit` VALUES(8,100,3);
-
-select employee_dob from employees;
-
-
-INSERT INTO `employees` VALUES (1, "smith",'1988-5-07',"M","1 Parker Street","7am to 3pm",20);
+INSERT INTO `employees` VALUES (1, "smith",1988-5-07,"M","1 Parker Street","7am to 3pm",20);
 INSERT INTO `employees` VALUES (2, "damon",'1989-5-09',"M","2 marcella Street","9am to 4pm",21);
 INSERT INTO `employees` VALUES (3, "tina",'1985-6-17',"F","22 calumet Street","3pm to 6pm",20);
 INSERT INTO `employees` VALUES (4, "taylor",'1982-9-27',"M","1 smith Street","3pm to 6pm",20);
@@ -240,8 +51,8 @@ insert into employees values (48, 'Stavro Gamlin', '1990-3-16', 'F', '2 Maple Dr
 insert into employees values (49, 'Jeno Shoulders', '1996-1-24', 'F', '59879 Kensington Park', '9am to 4pm', 91);
 insert into employees values (50, 'Clerkclaude Feenan', '1986-8-23', 'M', '397 Troy Center', '10am to 5pm', 91);
 
-select * from employees;
 
+-- Admin staff
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (1, 1, 'Admin', 'Checking');
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (2, 2, 'Admin', 'Issuing');
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (3, 3, 'Admin', 'Checking');
@@ -263,7 +74,6 @@ insert into administrative_staff (employee_id, station_id, staff_type, responsib
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (19, 19, 'Admin', 'Issuing');
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (20, 20, 'Admin', 'Checking');
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (21, 21, 'Admin', 'Checking');
-
 
 -- manager
 insert into manager (employee_id, station_id) values (42, 1);
@@ -289,14 +99,16 @@ insert into manager (employee_id, station_id) values (40, 20);
 insert into manager (employee_id, station_id) values (41, 21);
 
 -- motorman
-insert into motorman (license_id, tram_experience, employee_id) values (766024, 10, 43);
-insert into motorman (license_id, tram_experience, employee_id) values (751348, 5, 44);
-insert into motorman (license_id, tram_experience, employee_id) values (782479, 3, 45);
-insert into motorman (license_id, tram_experience, employee_id) values (721270, 9, 46);
-insert into motorman (license_id, tram_experience, employee_id) values (840108, 9, 47);
-insert into motorman (license_id, tram_experience, employee_id) values (822709, 5, 48);
-insert into motorman (license_id, tram_experience, employee_id) values (787520, 5, 49);
-insert into motorman (license_id, tram_experience, employee_id) values (919604, 4, 50);
+insert into manager (license_id, tram_experience, employee_id) values (766024, 10, 43);
+insert into manager (license_id, tram_experience, employee_id) values (751348, 5, 44);
+insert into manager (license_id, tram_experience, employee_id) values (782479, 3, 45);
+insert into manager (license_id, tram_experience, employee_id) values (721270, 9, 46);
+insert into manager (license_id, tram_experience, employee_id) values (840108, 9, 47);
+insert into manager (license_id, tram_experience, employee_id) values (822709, 5, 48);
+insert into manager (license_id, tram_experience, employee_id) values (787520, 5, 49);
+insert into manager (license_id, tram_experience, employee_id) values (919604, 4, 50);
+
+
 
 
 INSERT INTO `passenger` VALUES (1, "emma","emma@gmail.com",'1998-5-13',"F","1 Pond Street");
@@ -315,6 +127,99 @@ INSERT INTO `passenger` VALUES (12, "Stevie","stevie@gmail.com",'1982-8-13',"F",
 
 
 
+INSERT INTO `station` VALUES (1,"Downtown Crossing","1 Down Street","Parking",1);
+INSERT INTO `station` VALUES (2,"Park St","2 Park Street","ATM",1);
+INSERT INTO `station` VALUES (3,"State","4 Down State","Lounge",1);
+INSERT INTO `station` VALUES (4,"Govt Center","3 Center street","Parking",1);
+INSERT INTO `station` VALUES (5,"Ruggles","1 Rugg Street","ATM",1);
+INSERT INTO `station` VALUES (6,"Stony Brook","4 Brook Ave","Lounge",1);
+INSERT INTO `station` VALUES (7,"JFK","2 Umass Ave","Parking",1);
+INSERT INTO `station` VALUES (8,"Shawmut","3 Pond Ave","Parking",1);
+INSERT INTO `station` VALUES (9,"Wollaston","3 Wood Street","Lounge",1);
+INSERT INTO `station` VALUES (10,"South St","4 South street","Lounge",1);
+INSERT INTO `station` VALUES (11,"Kent St","2 king street","Parking",1);
+INSERT INTO `station` VALUES (12,"Newton Centre","22 center street","Parking",1);
+INSERT INTO `station` VALUES (13,"Symphony","2 huntington ave","Parking",1);
+INSERT INTO `station` VALUES (14,"Harvard","3 harvard sq","Parking",1);
+INSERT INTO `station` VALUES (15,"Wood Island","34 wood ave","Lounge",1);
+INSERT INTO `station` VALUES (16,"Assembly","21 assembly ave","ATM",1);
+INSERT INTO `station` VALUES (17,"Copley","27 Copley St","ATM, Lounge",1);
+INSERT INTO `station` VALUES (18,"BU Central","7 Central St","ATM, Lounge",1);
+INSERT INTO `station` VALUES (19,"Longwood","2 Long St","ATM",1);
+INSERT INTO `station` VALUES (20,"Union Square","28 Union St","ATM",1);
+INSERT INTO `station` VALUES (21,"Alewife","30 Alewife Ave","ATM",1);
+
+
+
+
+INSERT INTO `line` VALUES ("Green Line B");
+INSERT INTO `line` VALUES ("Green Line C");
+INSERT INTO `line` VALUES ("Green Line D");
+INSERT INTO `line` VALUES ("Green Line E");
+INSERT INTO `line` VALUES ("Orange Line");
+INSERT INTO `line` VALUES ("Red Line");
+INSERT INTO `line` VALUES ("Red Line M");
+INSERT INTO `line` VALUES ("Blue Line");
+
+
+
+INSERT INTO `route` VALUES (1,100,"Green Line B");
+INSERT INTO `route` VALUES (2,200,"Green Line C");
+INSERT INTO `route` VALUES (3,100,"Green Line D");
+INSERT INTO `route` VALUES (4,400,"Green Line E");
+INSERT INTO `route` VALUES (5,200,"Red Line");
+INSERT INTO `route` VALUES (6,100,"Red Line M");
+INSERT INTO `route` VALUES (7,100,"Blue Line");
+INSERT INTO `route` VALUES (8,100,"Orange Line");
+
+-- route_id, station_id, stop_no
+-- Green line B
+INSERT INTO `route_station` VALUES(1,10,1);
+INSERT INTO `route_station` VALUES(1,18,2);
+INSERT INTO `route_station` VALUES(1,17,3);
+INSERT INTO `route_station` VALUES(1,2,4);
+INSERT INTO `route_station` VALUES(1,4,5);
+INSERT INTO `route_station` VALUES(1,20,6);
+
+
+-- Green line D
+INSERT INTO `route_station` VALUES(3,12,1);
+INSERT INTO `route_station` VALUES(3,19,2);
+INSERT INTO `route_station` VALUES(3,17,3);
+INSERT INTO `route_station` VALUES(3,2,4);
+INSERT INTO `route_station` VALUES(3,4,5);
+INSERT INTO `route_station` VALUES(3,20,6);
+
+-- Red line
+INSERT INTO `route_station` VALUES(5,9,1);
+INSERT INTO `route_station` VALUES(5,7,2);
+INSERT INTO `route_station` VALUES(5,1,3);
+INSERT INTO `route_station` VALUES(5,2,4);
+INSERT INTO `route_station` VALUES(5,14,5);
+INSERT INTO `route_station` VALUES(5,21,6);
+
+
+-- Orange Line
+INSERT INTO `route_station` VALUES(8,6,1);
+INSERT INTO `route_station` VALUES(8,5,2);
+INSERT INTO `route_station` VALUES(8,1,3);
+INSERT INTO `route_station` VALUES(8,3,4);
+INSERT INTO `route_station` VALUES(8,16,5);
+
+
+ 
+INSERT INTO `tram` VALUES (1,"South St","M/T/W","9am-1am",1, true);
+INSERT INTO `tram` VALUES (2,"Newton Centre","M/T/W","9am-1am",3, true);
+
+INSERT INTO `tram` VALUES (3,"Union Square","Th/Fri/Sat","9am-10pm",1, false);
+INSERT INTO `tram` VALUES (4,"Union Square","Th/Fri/Sat","9am-10pm",3, false);
+
+
+INSERT INTO `tram` VALUES (5,"Wollaston","M/T/W","9am-1am",5, true);
+INSERT INTO `tram` VALUES (6,"Alewife","M/T/W","9am-1am",5, false);
+
+INSERT INTO `tram` VALUES (7,"Stony Brook","M/T/W","9am-6pm",8, true);
+INSERT INTO `tram` VALUES (8,"Assembly","M/T/W","9am-6pm",8, false);
 
 
 
@@ -325,9 +230,61 @@ INSERT INTO `passenger` VALUES (12, "Stevie","stevie@gmail.com",'1982-8-13',"F",
 
 
 
+INSERT INTO `motorman` VALUES(1,"2 years",7)
+INSERT INTO `motorman` VALUES(2,"2 years",8)
+INSERT INTO `motorman` VALUES(3,"3 years",9)
+INSERT INTO `motorman` VALUES(4,"3 years",10)
+INSERT INTO `motorman` VALUES(5,"4 years",6)
+
+
+
+
+
+ 
+  INSERT INTO `manager` VALUES(1,1)
+  INSERT INTO `manager` VALUES(2,2)
+  INSERT INTO `manager` VALUES(3,10)
+  INSERT INTO `manager` VALUES(11,11)
+
+
+
+
+INSERT INTO `administrative_staff` VALUES('Issuing',"Admin",4,10);
+INSERT INTO `administrative_staff` VALUES('Checking',"Admin",5,11);
+INSERT INTO `administrative_staff` VALUES('Issuing',"Admin",12,13);
+INSERT INTO `administrative_staff` VALUES('Issuing',"Admin",13,16);
+INSERT INTO `administrative_staff` VALUES('Issuing',"Admin",14,7);
+INSERT INTO `administrative_staff` VALUES('Checking',"Admin",15,12);
+
+
+
+   
+INSERT INTO `cargo_unit` VALUES(1,200,4);
+INSERT INTO `cargo_unit` VALUES(2,300,5);
+INSERT INTO `cargo_unit` VALUES(3,100,3);
+INSERT INTO `cargo_unit` VALUES(4,300,2);
+INSERT INTO `cargo_unit` VALUES(5,200,5);
+INSERT INTO `cargo_unit` VALUES(6,100,3);
+INSERT INTO `cargo_unit` VALUES(7,100,3);
+INSERT INTO `cargo_unit` VALUES(8,100,3);
+
+
+
+
+
+   
 
 
 
 
 
 
+
+
+
+
+INSERT INTO `motorman_tram` VALUES(7,1)
+INSERT INTO `motorman_tram` VALUES(8,2)
+INSERT INTO `motorman_tram` VALUES(9,5)
+INSERT INTO `motorman_tram` VALUES(10,9)
+INSERT INTO `motorman_tram` VALUES(6,10)

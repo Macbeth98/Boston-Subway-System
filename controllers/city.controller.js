@@ -9,12 +9,12 @@ const { City } = require("../model/model.js");
 const createCity = async (req, res) => {
   try {
 
-    let { cityName, stateName } = req.body;
+    let { city_name, state_name } = req.body;
 
-    if(!cityName) throw ({message: "City must be given."});
-    if(!stateName) throw ({message: "State must be given."});
+    if(!city_name) throw ({message: "City must be given."});
+    if(!state_name) throw ({message: "State must be given."});
 
-    const city = new City({cityName, stateName});
+    const city = new City({city_name, state_name});
 
     let queryString = `insert into city set ?`
 
@@ -28,6 +28,9 @@ const createCity = async (req, res) => {
 
   } catch(e) {
     console.error(e);
+    if(e.code === "ER_DUP_ENTRY") {
+      e.message = "The city and state given already exists."
+    }
     return res
     .status(httpStatusCodes.BAD_REQUEST)
     .json({
@@ -40,16 +43,16 @@ const createCity = async (req, res) => {
 const getCity = async (req, res) => {
   try {
 
-    let { cityId, cityName, stateName } = req.query;
+    let { cityId, city_name, state_name } = req.query;
 
     let queryString = 'SELECT * from city';
 
     if(cityId) {
       queryString = queryString + ` where city_code = ${cityId}`;
-    } else if (cityName) {
-      queryString = queryString + ` where city_name = ${cityName}`;
-    } else if (stateName) {
-      queryString = queryString + ` where state_name = ${stateName}`;
+    } else if (city_name) {
+      queryString = queryString + ` where city_name = ${city_name}`;
+    } else if (state_name) {
+      queryString = queryString + ` where state_name = ${state_name}`;
     }
 
     const data = await executeSQLString(queryString);

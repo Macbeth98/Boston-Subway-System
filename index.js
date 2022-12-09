@@ -54,8 +54,16 @@ app.use(printAPIOriginDetails);
 
 // IMPORTING ALL THE REQUIRED ROUTES.
 const cityRouter = require("./routes/city.routes");
+const ticketRouter = require("./routes/ticket.routes");
+const passengerRouter = require("./routes/passenger.routes");
+const employeeRouter = require("./routes/employee.routes");
+const serviceRouter = require("./routes/service.routes");
 
 app.use('/api/city', cityRouter);
+app.use('/api/ticket', ticketRouter);
+app.use('/api/passenger', passengerRouter);
+app.use('/api/employee', employeeRouter);
+app.use('/api/service', serviceRouter);
 
 
 // set port, listen for requests

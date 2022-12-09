@@ -1,8 +1,8 @@
 // MySQL server config details.
 
 module.exports = {
-  HOST: "remotemysql.com",
-  USER: "r97dF5IqLS",
-  PASSWORD: "RiU3P22pCE",
-  DB: "r97dF5IqLS"
+  HOST: "127.0.0.1",
+  USER: "root",
+  PASSWORD: "root1234",
+  DB: "projectdbms"
 };

@@ -164,7 +164,7 @@ CREATE TABLE `route_station`
 CREATE TABLE ticket
 (
 	ticket_id 		INT PRIMARY KEY auto_increment,
-    date_time       datetime,
+    date_time       date_time,
     station_id		INT,
     route_id        INT,
     passenger_id	INT,
