@@ -6,6 +6,7 @@
 const httpStatusCodes = require("../utils/httpStatusCodes");
 const { executeSQLModel, executeSQLString } = require("../model/db");
 const { Employee, AdminstrativeStaff, Manager, Motorman, validateDate } = require("../model/model.js");
+const e = require("express");
 
 
 
@@ -38,7 +39,7 @@ const addEmployee = async (req, res) => {
 
     let queryString = "insert into employees set ?";
 
-    let employeeRes = await executeSQLModel(queryString, passenger);
+    let employeeRes = await executeSQLModel(queryString, employee);
 
     employee.employee_id = employeeRes.insertId;
 
@@ -46,7 +47,23 @@ const addEmployee = async (req, res) => {
 
     employeeType.employee_id = employee.employee_id;
 
-    let employeeTypeRes = await executeSQLModel(queryString, employeeType);
+    let employeeSubData = {...employeeType};
+
+    for (const prop in employee) {
+      if(prop === "employee_id") continue;
+
+      delete employeeSubData[prop];
+    }
+
+    // if(data.admin_staff) {
+    //   employeeSubData.station_id = employeeType.station_id;
+    //   employeeSubData.staff_type = employeeType.staff_type;
+    //   employeeSubData.responsibilities = employeeType.responsibilities;
+    // } else {
+      
+    // }
+
+    let employeeTypeRes = await executeSQLModel(queryString, employeeSubData);
 
     return res.json({
       status: true,

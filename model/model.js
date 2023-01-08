@@ -1,7 +1,7 @@
 const validateDate = async (dateString) => {
   return new Promise(async (resolve, reject) => {
     let date = new Date(dateString);
-    if(date.getTime() >= new Date.getTime()) {
+    if(date.getTime() >= new Date().getTime()) {
       throw ({message: "Cannot give future date."})
     }
     return date;

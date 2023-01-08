@@ -17,6 +17,62 @@ const errorCatcher = async (req, res, error) => {
 }
 
 
+const getRoutes = async (req, res) => {
+  try {
+
+    let queryString = 'select * from route';
+
+    let routes = await executeSQLString(queryString);
+
+    return res.json({
+      status: true,
+      routes
+    })
+    
+  } catch (e) {
+    errorCatcher(req, res, e);
+    return ;
+  }
+}
+
+
+const getStations = async (req, res) => {
+  try {
+    
+    let queryString = 'select * from station order by station_id';
+
+    let stations = await executeSQLString(queryString);
+
+    return res.json({
+      status: true,
+      stations
+    })
+
+  } catch (e) {
+    errorCatcher(req, res, e);
+    return ;
+  }
+}
+
+const getTrams = async (req, res) => {
+  try {
+    
+    let queryString = 'select * from tram as t inner join route as r on t.route_id = r.route_id order by tram_id';
+
+    let trams = await executeSQLString(queryString);
+
+    return res.json({
+      status: true,
+      trams
+    })
+
+  } catch (e) {
+    errorCatcher(req, res, e);
+    return ;
+  }
+}
+
+
 const getPassengersTravelledInARoute = async (req, res) => {
   try {
 
@@ -48,7 +104,6 @@ const getMostRoutesUsedbyPassenger = async (req, res) => {
 
     return res.json({
       status: true,
-      count: routes.length,
       routes
     })
 
@@ -71,7 +126,6 @@ const getPassengerTravelHistory = async (req, res) => {
 
     return res.json({
       status: true,
-      count: history.length,
       history
     })
     
@@ -94,7 +148,6 @@ const getPassengerTicketsWithLuggageData = async (req, res) => {
 
     return res.json({
       status: true,
-      count: tickets.length,
       tickets
     })
 
@@ -116,7 +169,6 @@ const getTramsWithCargoDataPerRoute = async (req, res) => {
 
     return res.json({
       status: true,
-      count: trams.length,
       trams
     })
 
@@ -162,7 +214,6 @@ const getTramsForRouteForADay = async (req, res) => {
 
     return res.json({
       status: true,
-      count: trams.length,
       trams
     })
 
@@ -185,7 +236,6 @@ const getRoutesForGivenStation =  async (req, res) => {
 
     return res.json({
       status: true,
-      count: routes.length,
       routes
     })
 
@@ -208,7 +258,6 @@ const getCompatibaleStationsForGivenStation = async (req, res) => {
 
     return res.json({
       status: true,
-      count: stations.length,
       stations
     })
 
@@ -230,7 +279,6 @@ const getRouteDataForGivenRoute = async (req, res) => {
 
   return res.json({
     status: true,
-    count: routeData.length,
     routeData
   })
 }
@@ -243,15 +291,14 @@ const getTramsForGivenSourceAndDestination = async (req, res) => {
     if(!start_station_id) throw ({message: "Start Point is not given."});
     if(!end_station_id) throw ({message: "End point is not given."});
 
-    let queryString = `call routes_for_station(${start_station_id})`;
+    let queryString = `call get_tram_for_given_start_end_stations(${start_station_id}, ${end_station_id})`;
 
-    let startRoutes = await executeSQLString(queryString);
-    if(startRoutes.length === 0) throw ({message: "There is no route with the given station."});
-
-    queryString = `call routes_for_station(${end_station_id})`;
-
-    let endRoutes = await executeSQLString(queryString);
-
+    let trams = await executeSQLString(queryString);
+    
+    return res.json({
+      status: true,
+      trams
+    })
 
     
   } catch (e) {
@@ -262,6 +309,9 @@ const getTramsForGivenSourceAndDestination = async (req, res) => {
 
 
 module.exports = {
+  getRoutes,
+  getStations,
+  getTrams,
   getPassengersTravelledInARoute,
   getMostRoutesUsedbyPassenger,
   getPassengerTravelHistory,

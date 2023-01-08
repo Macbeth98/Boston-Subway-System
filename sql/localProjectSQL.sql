@@ -346,6 +346,7 @@ insert into administrative_staff (employee_id, station_id, staff_type, responsib
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (19, 19, 'Admin', 'Issuing');
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (20, 20, 'Admin', 'Checking');
 insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (21, 21, 'Admin', 'Checking');
+insert into administrative_staff (employee_id, station_id, staff_type, responsibilities) values (51, 1, 'Worker', 'Ticket checking');
 
 
 -- manager
@@ -395,7 +396,7 @@ INSERT INTO `passenger` VALUES (10, "Emily","emily@gmail.com",'1997-6-27',"F","1
 INSERT INTO `passenger` VALUES (11, "Olivia","olivia@gmail.com",'1999-3-10',"F","1 huntington ave");
 INSERT INTO `passenger` VALUES (12, "Stevie","stevie@gmail.com",'1982-8-13',"F","11 smith Street");
 
-drop procedure createTicket;
+drop function createTicket;
 
 delimiter $$
 create function createTicket(
@@ -447,7 +448,33 @@ delimiter ;
 
 
 select createTicket(10, 1, 1, 1, 1, false);
-select @insertId;
+
+select createTicket(10,1,2,1,1,false);
+select createTicket(10,1,3,1,1,false);
+select createTicket(10,1,4,1,1,false);
+select createTicket(10,1,5,1,1,false);
+select createTicket(10,1,6,1,1,false);
+
+
+
+select createTicket(12,3,1,2,2,false);
+select createTicket(12,3,7,2,2,false);
+select createTicket(12,3,8,2,2,false);
+select createTicket(12,3,9,2,2,false);
+select createTicket(12,3,10,2,2,false);
+select createTicket(12,3,11,2,2,false);
+select createTicket(12,3,2,2,2,false);
+select createTicket(12,3,3,2,2,false);
+select createTicket(12,3,4,2,2,false);
+
+
+
+select createTicket(19,3,1,3,2,false);
+select createTicket(19,3,2,3,2,false);
+select createTicket(19,3,3,3,2,false);
+select createTicket(19,3,4,3,2,false);
+select createTicket(19,3,5,3,2,false);
+select createTicket(19,3,6,3,2,false);
 
 select * from ticket;
 delete from ticket;
@@ -511,12 +538,15 @@ DELIMITER //
         SET MESSAGE_TEXT = 'Route id cannot be null', MYSQL_ERRNO = 1048 ;
 	END IF;
     
-	select p.*, t.* from passenger as p inner join ticket as t on p.passenger_id = t.passenger_id where p.passenger_id = passenger_id order by t.ticket_id desc;
+	select p.*, t.*, tr.*, r.*, s.* from passenger as p inner join ticket as t on p.passenger_id = t.passenger_id 
+    inner join tram as tr on tr.tram_id = t.tram_id inner join route as r on r.route_id = t.route_id
+    inner join station as s on s.station_id = t.station_id
+    where p.passenger_id = passenger_id order by t.ticket_id desc;
  
  END //
  delimiter ;
  
- call passenger_travel_history(2);
+ call passenger_travel_history(1);
  
  /*
 	Get Passenger Tickets with Luggage Data.
@@ -697,6 +727,8 @@ select * from route_station;
 /*
 	get stations compatible for given station.
 */
+drop procedure get_stations_for_given_station;
+
 delimiter //
 create procedure get_stations_for_given_station (in station_id_p int)
 begin
@@ -706,13 +738,13 @@ begin
 	end if;
     
     select * from station where station_id in ( 
-		select station_id from route_station where route_id in (select route_id from route_station where station_id = 1) order by route_id, stop_no desc
-    ) and station_id != 1;
+		select station_id from route_station where route_id in (select route_id from route_station where station_id = station_id_p) order by route_id, stop_no desc
+    ) and station_id != station_id_p;
     
 end //
 delimiter ;
 
-call get_stations_for_given_station(1);
+call get_stations_for_given_station(2);
 
 /*
 	get routes for a station.
@@ -819,6 +851,40 @@ select * from station;
 select * from route_station;
 select tram.* from route_station as rs inner join tram on tram.route_id = rs.route_id where rs.route_id = 1;
 select * from ticket;
+select * from route;
+select * from tram;
+
+-- Show Passenger
+select * from passenger;
+select * from passenger where passenger_email = "demouser@gmail.com";
+
+/*    Get the number of times an employee has given ticket to a passenger for a route
+*/
+
+drop procedure passenger_emp_route;
+
+DELIMITER //
+CREATE PROCEDURE passenger_emp_route(IN rt_id INT)
+BEGIN
+	if rt_id is null then 
+		SIGNAL SQLSTATE '23000'
+        SET MESSAGE_TEXT = 'Route id cannot be null', MYSQL_ERRNO = 1048 ;
+	end if;
+SELECT passenger_name,employee_name,count(*)
+FROM passenger p
+INNER JOIN ticket t
+ON p.passenger_id=t.passenger_id
+INNER JOIN employees e
+ON e.employee_id=t.employee_id
+GROUP BY t.passenger_id,t.employee_id,rt_id;
+END //
+delimiter ;
+
+CALL passenger_emp_route(5);
+
+
+
+
 
 
 

@@ -11,6 +11,11 @@ router.get("/", (req, res) => {
   })
 })
 
+router.get("/routes/get", serviceController.getRoutes);
+
+router.get("/stations/get", serviceController.getStations);
+
+router.get("/trams/get", serviceController.getTrams);
 
 router.post("/passengers/travelled/in/route", serviceController.getPassengersTravelledInARoute);
 

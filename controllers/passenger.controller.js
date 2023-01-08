@@ -46,7 +46,7 @@ const editPassengerData = async (req, res) => {
 
     const passenger = new Passenger(data);
 
-    if(passenger.passenger_id) {
+    if(!passenger.passenger_id) {
       throw ({message: "Passenger Id must be given."});
     }
 
@@ -56,7 +56,7 @@ const editPassengerData = async (req, res) => {
 
     if(passenger.passenger_dob) {
       let date = new Date(passenger.passenger_dob);
-      if(date.getTime() >= new Date.getTime()) {
+      if(date.getTime() >= new Date().getTime()) {
         throw ({message: "Cannot give future date."})
       }
     }
@@ -65,7 +65,11 @@ const editPassengerData = async (req, res) => {
       if(!passenger[prop]) continue ;
 
       let setComma = commaRequired? ", " : "";
-      setQuery = setQuery + setComma + ` ${prop} = ` + passenger[prop];
+      if(prop === "passenger_email") {
+        setQuery = setQuery + setComma + ` ${prop} = "${passenger[prop]}"`;
+      } else{
+        setQuery = setQuery + setComma + ` ${prop} = "${passenger[prop]}"`;
+      }
       commaRequired = true;
     }
 
@@ -98,12 +102,12 @@ const getPassengers = async (req, res) => {
 
     let { passenger_id, passenger_email } = req.query;
 
-    let queryString = "select * from passenger where ";
+    let queryString = "select * from passenger";
 
     if(passenger_id) {
-      queryString = queryString + "passenger_id = " + passenger_id
+      queryString = queryString + " where passenger_id = " + passenger_id
     } else if (passenger_email) {
-      queryString = queryString + "passenger_email = " + passenger_email;
+      queryString = queryString + ` where passenger_email = "${passenger_email}"`;
     }
 
     let passengers = await executeSQLString(queryString);

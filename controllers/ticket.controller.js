@@ -43,7 +43,7 @@ const createNewTicketPromise = async (data)=> {
         luggageResult = await executeSQLModel(queryString, luggage);
       }
   
-      return resolve({ticket, luggageResult}); 
+      return resolve({ticket, luggage}); 
     } catch (error) {
       return reject(error);
     }
